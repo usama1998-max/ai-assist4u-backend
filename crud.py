@@ -5,11 +5,14 @@ from sqlalchemy.exc import SQLAlchemyError
 
 
 async def save_chat_tab(session: AsyncSession, name: str, user: str, model: str):
-    chat_message = ChatTabs(name=name, user=user, model=model)
-    session.add(chat_message)
-    await session.commit()
-    await session.refresh(chat_message)
-    return chat_message
+    try:
+        chat_message = ChatTabs(name=name, user=user, model=model)
+        session.add(chat_message)
+        await session.commit()
+        await session.refresh(chat_message)
+        return chat_message
+    finally:
+        await session.close()
 
 
 async def get_all_chat_tabs(session: AsyncSession, user: str):

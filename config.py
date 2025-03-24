@@ -11,7 +11,7 @@ load_dotenv()
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 # Create async engine for SQLAlchemy
-engine = create_async_engine(DATABASE_URL ,pool_size=5, max_overflow=10, echo=True)
+engine = create_async_engine(DATABASE_URL ,pool_size=5, max_overflow=10, echo=True, future=True, pool_pre_ping=True)
 
 # Create session factory
 SessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)

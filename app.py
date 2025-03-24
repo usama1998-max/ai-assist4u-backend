@@ -13,6 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from config import engine, Base, get_db
 from contextlib import asynccontextmanager
 import crud
+import uvicorn
 
 load_dotenv()
 
@@ -147,3 +148,6 @@ async def clear_chat_tab(tab: int, session: AsyncSession = Depends(get_db)):
     if success:
         return JSONResponse(content={"message": "Chat tab removed successfully!"}, status_code=200)
     return JSONResponse(content={"error": "Failed to remove chat tab!"}, status_code=500)
+
+if __name__ == "__main__":
+    asyncio.run(uvicorn.run(app, host="0.0.0.0", port=8000))
