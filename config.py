@@ -25,4 +25,7 @@ Base = declarative_base()
 
 async def get_db():
     async with SessionLocal() as session:
-        yield session
+        try:
+            yield session  # ✅ Provide a fresh session for every request
+        finally:
+            await session.close()
