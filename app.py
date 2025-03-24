@@ -37,9 +37,9 @@ async def init_db():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
-        loop = asyncio.get_running_loop()
-        if loop.is_running():
-            await init_db()  # Ensures the DB is initialized in the same loop
+        if asyncio.get_event_loop().is_closed():
+            asyncio.set_event_loop(asyncio.new_event_loop())
+        await init_db()  # Ensures the DB is initialized in the same loop
         yield
     except InterfaceError:
         logger.error("Database connection failed, retrying...")
