@@ -1,5 +1,5 @@
+import asyncio
 import os
-
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
@@ -24,6 +24,7 @@ Base = declarative_base()
 
 
 async def get_db():
+    loop = asyncio.get_running_loop()
     async with SessionLocal() as session:
         try:
             yield session  # ✅ Provide a fresh session for every request
