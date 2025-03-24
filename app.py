@@ -7,9 +7,9 @@ import os
 from dotenv import load_dotenv
 import logging
 import asyncio
-
+from asyncpg.exceptions import InterfaceError
 from sqlalchemy.ext.asyncio import AsyncSession
-from validate import ChatHistoryRequest
+# from validate import ChatHistoryRequest
 from config import engine, Base, get_db
 from contextlib import asynccontextmanager
 import crud
@@ -35,8 +35,13 @@ async def init_db():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await init_db()  # ✅ Runs when FastAPI starts
-    yield  # Keeps the app running
+    try:
+        await init_db()
+    except InterfaceError:
+        logger.error("Database connection failed, retrying...")
+        await asyncio.sleep(5)  # ✅ Wait before retrying
+        await init_db()
+    yield
 
 # Initialize FastAPI app
 app = FastAPI(lifespan=lifespan)
