@@ -62,13 +62,13 @@ async def home():
 
 async def generate_response_stream(prompt: str):
     try:
-        yield json.dumps({"message": "<SOS>", "status": "ready"})
+        yield json.dumps({"message": "", "status": "ready"})
         response = model.generate_content(prompt, stream=True)
         for chunk in response:
             yield json.dumps({"message": chunk.text, "status": "stream"})
             await asyncio.sleep(0.01)
 
-        yield json.dumps({"message": "<EOS>", "status": "stop"})
+        yield json.dumps({"message": "", "status": "stop"})
 
     except Exception as e:
         logger.error(str(e))
